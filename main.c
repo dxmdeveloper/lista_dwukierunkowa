@@ -194,13 +194,3 @@ char * my_getline(FILE * infile, char * str, size_t num){
     if(num > 1) str[num-1] = '\0';
     return str;
 }
-
-/*if(fgets(str, num, infile) == NULL) 
-        return NULL;
-
-    size_t strlen = 0;
-    while (strlen < num && str[strlen] != '\0'){
-        if(str[strlen++] == '\n'){str[--strlen] = '\0'; break;}
-    }
-
-    */
