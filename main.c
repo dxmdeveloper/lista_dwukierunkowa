@@ -94,13 +94,15 @@ int main(int argc, char * argv[]){
                     }
                     // insert
                     case '4': {
-                        uint index = 0;
+                        uint index = ~0;
                         printf("wstaw po indeksie numer: ");
                         my_getline(stdin, inputText, 10);
                         sscanf(inputText, " %u ", &index);
                         printf("wprowadź tekst [do 99 znaków]: ");
                         my_getline(stdin, inputText, 100);
-                        list_Insert(&list, index, inputText);
+                        if(list_Insert(&list, index, inputText) != 0){
+                            printf("podano nieprawidłowy indeks!\n");
+                        }
                         break;
                     }
                     // pop back
@@ -115,7 +117,7 @@ int main(int argc, char * argv[]){
                     }
                     // remove by index
                     case '7': {
-                        uint index = 0;
+                        uint index = ~0;
                         printf("usuń element z indeksem: ");
                         my_getline(stdin, inputText, 10);
                         sscanf(inputText, " %u ", &index);
@@ -124,7 +126,7 @@ int main(int argc, char * argv[]){
                     }
                     // save list
                     case 's' : {
-                        if((file = fopen("list.txt", "w") == NULL))
+                        if((file = fopen("list.txt", "w")) == NULL)
                             printf("Error: Nie można otworzyć pliku list.txt\n");
                         else {
                             list_WriteToFile(&list, file);
@@ -156,10 +158,9 @@ int main(int argc, char * argv[]){
 
 char showInitMenu(){
     char opt;
-    printf("1. Stwórz nową listę\n");
+    printf("\n1. Stwórz nową listę\n");
     printf("2. Załaduj listę z pliku list.txt\n");
     printf("e. Wyjście z programu\n>");
-    fgets(opt, 100, stdin);
     my_getline(stdin, &opt, 1);
     return opt;
 }
@@ -186,11 +187,13 @@ void showListCallbackFunc(uint iteration, const char * nodeContent){
 char * my_getline(FILE * infile, char * str, size_t num){
     char c = EOF;
     uint i = 0;
+    uint maxCI = num - 1 - (num != 1 ? 1 : 0);
 
-    while((c = fgetc(infile)) != EOF && c != '\n' && i < num - 1){
-        if(i < num - 1) str[i++] = c; 
+    if(num == 0) return NULL;
+    while((c = fgetc(infile)) != EOF && c != '\n'){
+        if(i <= maxCI) str[i++] = c; 
     }
 
-    if(num > 1) str[num-1] = '\0';
+    if(num > 1) str[i] = '\0';
     return str;
 }
